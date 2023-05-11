@@ -66,7 +66,7 @@ public class Main2 extends JFrame {
 		
 		setTitle("Pesquisa de email");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(500, 300, 400, 170);
+		setBounds(400, 300, 400, 170);
 		Principal = new JPanel();
 		Principal.setBackground(new Color(26, 95, 180));
 		Principal.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -153,11 +153,13 @@ public class Main2 extends JFrame {
 		infoProf.getColumnModel().getColumn(0).setMinWidth(20);
 		infoProf.getColumnModel().getColumn(1).setPreferredWidth(90);
 		infoProf.getColumnModel().getColumn(1).setMinWidth(20);
-		infoProf.getColumnModel().getColumn(2).setPreferredWidth(130);
+		infoProf.getColumnModel().getColumn(2).setPreferredWidth(200);
 		infoProf.getColumnModel().getColumn(2).setMinWidth(20);
+		infoProf.getColumnModel().getColumn(3).setPreferredWidth(60);
 		infoProf.getColumnModel().getColumn(3).setMinWidth(20);
 		infoProf.getColumnModel().getColumn(4).setPreferredWidth(90);
 		infoProf.getColumnModel().getColumn(4).setMinWidth(20);
+		infoProf.getColumnModel().getColumn(5).setPreferredWidth(0);
 		infoProf.getColumnModel().getColumn(5).setMinWidth(0);
 		infoProf.getColumnModel().getColumn(5).setMaxWidth(0);
 		scrollPane5.setViewportView(infoProf);
@@ -278,7 +280,7 @@ public class Main2 extends JFrame {
 					panel3.setVisible(true);
 					panel4.setVisible(true);
 					scrollPane5.setVisible(true);
-					setBounds(500, 300, 500, 370);
+					setBounds(400, 300, 500, 370);
 					
 					//mostra o primeiro email encontrado
 					textEmail.setText(email);
@@ -298,7 +300,7 @@ public class Main2 extends JFrame {
 					panel3.setVisible(false);
 					panel4.setVisible(false);
 					scrollPane5.setVisible(false);
-					setBounds(500, 300, 400, 170);
+					setBounds(400, 300, 400, 170);
 					
 					//Mensagem de erro
 					JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
@@ -386,7 +388,7 @@ public class Main2 extends JFrame {
 							panel3.setVisible(true);
 							panel4.setVisible(true);
 							scrollPane5.setVisible(true);
-							setBounds(500, 300, 500, 370);
+							setBounds(400, 300, 500, 370);
 							
 							//mostra o primeiro email encontrado
 							textEmail.setText(email);
@@ -406,7 +408,7 @@ public class Main2 extends JFrame {
 							panel3.setVisible(false);
 							panel4.setVisible(false);
 							scrollPane5.setVisible(false);
-							setBounds(500, 300, 400, 170);
+							setBounds(400, 300, 400, 170);
 							
 							//Mensagem de erro
 							JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
