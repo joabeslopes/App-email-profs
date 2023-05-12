@@ -10,9 +10,12 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
+import java.sql.Connection;
 import java.util.Vector;
 
 import javax.swing.GroupLayout;
@@ -30,8 +33,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class Main2 extends JFrame {
 
@@ -41,6 +42,7 @@ public class Main2 extends JFrame {
 	private String email;
 	private String selecaoEmail;
 	private int selecaoLinha;
+	private  Connection conectado = null;
 	
 	
 	SqlConnect sqlCon = new SqlConnect();
@@ -258,14 +260,22 @@ public class Main2 extends JFrame {
 		btnSearchName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-			//Limpa a tela
+				//Limpa a tela
 				DefaultTableModel df = (DefaultTableModel) tabelaInfoProfs.getModel();
 				df.setRowCount(0);
 				textEmail.setText(null);
 				
-			// Pesquisa o email do prof	
+				//tenta se conectar, caso seja a primeira vez
+				if (conectado == null) {
+					conectado = sqlCon.criarConexao();
+				} 
+				
+				// se já estiver conectado
+				if(conectado != null) {
+				
+					
+				// Pesquisa o email do prof	
 				String name = textName.getText();
-				sqlCon.criarConexao();
 				email = sqlCon.pesquisaEmail(name);
 				
 				//se ele achar o email
@@ -293,7 +303,7 @@ public class Main2 extends JFrame {
 					
 					
 				}else {
-					//Altera a tela do usuário
+					//Altera novamente a tela do usuário, caso ele ja tenha pesquisado outro nome
 					btnEnviarEmail.setVisible(false);
 					painelEmail.setVisible(false);
 					outrasInfos.setVisible(false);
@@ -303,33 +313,33 @@ public class Main2 extends JFrame {
 					//Mensagem de erro
 					JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
 				}
-				
-				sqlCon.encerrarConexao();
-				
+
+			} else {
+				JOptionPane.showMessageDialog(btnSearchName, "Conexão com servidor falhou, tente novamente");
 			}
+				
+		}
 			
-		});
+	});
 		
 		
 		//Açoes do botao de enviar email
+		
 		btnEnviarEmail.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-				    try {
-				    	
+				   
+					try {
 				    	
 						// Copia o email selecionado da tabela para a área de transferência
 				    	selecaoEmail = textEmail.getText();
 				    	StringSelection selection = new StringSelection(selecaoEmail);
-				    	
-						if (!selection.equals(null)) {
 							
 							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 							clipboard.setContents(selection, selection);
 
 							JOptionPane.showMessageDialog(btnSearchName, "Email copiado para a área de transferência !");
-						}
 						
 						//Desktop.getDesktop().browse(new URI("https://serverjoabe.xyz:8090/snappymail/"));
 						Desktop.getDesktop().browse(new URI("https://outlook.office.com"));
@@ -345,6 +355,7 @@ public class Main2 extends JFrame {
 		
 		
 		// Reconhece a linha da tabela que o usuário clica, e coloca o email do professor selecionado na tela
+		
 		tabelaInfoProfs.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 					selecaoLinha = tabelaInfoProfs.getSelectedRow();
@@ -358,6 +369,7 @@ public class Main2 extends JFrame {
 		
 		
 		// Ações ao pressionar Enter, que serão as mesmas do botão de pesquisa
+		
 		textName.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				
@@ -365,52 +377,62 @@ public class Main2 extends JFrame {
 					
 					
 					//Limpa a tela
-						DefaultTableModel df = (DefaultTableModel) tabelaInfoProfs.getModel();
-						df.setRowCount(0);
-						textEmail.setText(null);
+					DefaultTableModel df = (DefaultTableModel) tabelaInfoProfs.getModel();
+					df.setRowCount(0);
+					textEmail.setText(null);
+					
+					//tenta se conectar, caso seja a primeira vez
+					if (conectado == null) {
+						conectado = sqlCon.criarConexao();
+					} 
+					
+					// se já estiver conectado
+					if(conectado != null) {
+					
 						
 					// Pesquisa o email do prof	
-						String name = textName.getText();
-						sqlCon.criarConexao();
-						email = sqlCon.pesquisaEmail(name);
+					String name = textName.getText();
+					email = sqlCon.pesquisaEmail(name);
+					
+					//se ele achar o email
+					if (email != null) {
 						
-						//se ele achar o email
-						if (email != null) {
-							
-							
-							//Altera a tela do usuário
-							setBounds(500, 300, 500, 370);
-							btnEnviarEmail.setVisible(true);
-							painelEmail.setVisible(true);
-							outrasInfos.setVisible(true);
-							infoProfs.setVisible(true);
-							
-							
-							//mostra o primeiro email encontrado
-							textEmail.setText(email);
-							
-							
-							// Preenche a tabela com outras informações coletadas
-							Vector<Vector<String>> tabela = sqlCon.outrasInfos(name);
-							int colunas = sqlCon.colunas;
-							for (int i=0; i<colunas; i++) {
-								df.addRow(tabela.elementAt(i));
-							}
-							
-							
-						}else {
-							//Altera a tela do usuário
-							btnEnviarEmail.setVisible(false);
-							painelEmail.setVisible(false);
-							outrasInfos.setVisible(false);
-							infoProfs.setVisible(false);
-							setBounds(500, 300, 400, 170);
-							
-							//Mensagem de erro
-							JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
+						
+						//Altera a tela do usuário
+						setBounds(500, 300, 500, 370);
+						btnEnviarEmail.setVisible(true);
+						painelEmail.setVisible(true);
+						outrasInfos.setVisible(true);
+						infoProfs.setVisible(true);
+						
+						
+						//mostra o primeiro email encontrado
+						textEmail.setText(email);
+						
+						
+						// Preenche a tabela com outras informações coletadas
+						Vector<Vector<String>> tabela = sqlCon.outrasInfos(name);
+						int colunas = sqlCon.colunas;
+						for (int i=0; i<colunas; i++) {
+							df.addRow(tabela.elementAt(i));
 						}
 						
-						sqlCon.encerrarConexao();	
+						
+					}else {
+						//Altera novamente a tela do usuário, caso ele ja tenha pesquisado outro nome
+						btnEnviarEmail.setVisible(false);
+						painelEmail.setVisible(false);
+						outrasInfos.setVisible(false);
+						infoProfs.setVisible(false);
+						setBounds(500, 300, 400, 170);
+						
+						//Mensagem de erro
+						JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
+					}
+
+				} else {
+					JOptionPane.showMessageDialog(btnSearchName, "Conexão com servidor falhou, tente novamente");
+				}
 					
 					
 					
