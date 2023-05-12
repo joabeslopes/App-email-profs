@@ -21,7 +21,7 @@ public class SqlConnect {
 	public Connection criarConexao() {
 	
 	try {
-	con = DriverManager.getConnection("jdbc:mysql://databasejoabe.ddns.net:3306/javaAppEmail","javaAppEmail","smPvtJ@*!nq&5w%");
+	con = DriverManager.getConnection("jdbc:mysql://45.79.32.153:3306/javaAppEmail","javaAppEmail","smPvtJ@*!nq&5w%");
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
