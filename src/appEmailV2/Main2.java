@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -20,6 +21,7 @@ import java.util.Vector;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -54,8 +56,6 @@ public class Main2 extends JFrame {
 				try {
 					Main2 frame = new Main2();
 					frame.setVisible(true);
-
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -66,6 +66,10 @@ public class Main2 extends JFrame {
 	
 	public Main2() {
 		
+		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("email-icon.png"));
+		ImageIcon icon = new ImageIcon(image);
+		setIconImage(icon.getImage());
+
 		setTitle("Pesquisa de email");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(500, 300, 400, 170);
@@ -73,7 +77,6 @@ public class Main2 extends JFrame {
 		Principal.setBackground(new Color(26, 95, 180));
 		Principal.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(Principal);
-		
 		
 		JPanel painelEmail = new JPanel();
 		painelEmail.setBackground(new Color(26, 95, 180));
