@@ -42,7 +42,8 @@ public class Main2 extends JFrame {
 	private String email;
 	private String selecaoEmail;
 	private int selecaoLinha;
-	private  Connection conectado = null;
+	private  Connection conectar = null;
+	private boolean conexaoUp = false;
 	
 	
 	SqlConnect sqlCon = new SqlConnect();
@@ -258,66 +259,74 @@ public class Main2 extends JFrame {
 		// Ações do botão de pesquisa, que serão as mesmas se o usuário pressionar Enter
 		
 		btnSearchName.addActionListener(new ActionListener() {
+			
+			public void pesquisar() {
+				
+			//Limpa a tela
+			DefaultTableModel df = (DefaultTableModel) tabelaInfoProfs.getModel();
+			df.setRowCount(0);
+			textEmail.setText(null);
+				
+			// Pesquisa o email do prof	
+			String name = textName.getText();
+			email = sqlCon.pesquisaEmail(name);
+			
+			//se ele achar o email
+			if (email != null) {
+				
+				
+				//Altera a tela do usuário
+				setBounds(500, 300, 500, 370);
+				btnEnviarEmail.setVisible(true);
+				painelEmail.setVisible(true);
+				outrasInfos.setVisible(true);
+				infoProfs.setVisible(true);
+				
+				
+				//mostra o primeiro email encontrado
+				textEmail.setText(email);
+				
+				
+				// Preenche a tabela com outras informações coletadas
+				Vector<Vector<String>> tabela = sqlCon.outrasInfos(name);
+				int colunas = sqlCon.colunas;
+				for (int i=0; i<colunas; i++) {
+					df.addRow(tabela.elementAt(i));
+				}
+				
+				
+			}else {
+				//Altera novamente a tela do usuário, caso ele ja tenha pesquisado outro nome
+				btnEnviarEmail.setVisible(false);
+				painelEmail.setVisible(false);
+				outrasInfos.setVisible(false);
+				infoProfs.setVisible(false);
+				setBounds(500, 300, 400, 170);
+				
+				//Mensagem de erro
+				JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
+			}
+
+		}
+			
 			public void actionPerformed(ActionEvent e) {
 				
-				//Limpa a tela
-				DefaultTableModel df = (DefaultTableModel) tabelaInfoProfs.getModel();
-				df.setRowCount(0);
-				textEmail.setText(null);
-				
 				//tenta se conectar, caso seja a primeira vez
-				if (conectado == null) {
-					conectado = sqlCon.criarConexao();
+				
+				if (conectar == null) {
+					conectar = sqlCon.criarConexao();
+					conexaoUp = true;
 				} 
 				
 				// se já estiver conectado
-				if(conectado != null) {
+				if(conexaoUp) {
 				
-					
-				// Pesquisa o email do prof	
-				String name = textName.getText();
-				email = sqlCon.pesquisaEmail(name);
-				
-				//se ele achar o email
-				if (email != null) {
-					
-					
-					//Altera a tela do usuário
-					setBounds(500, 300, 500, 370);
-					btnEnviarEmail.setVisible(true);
-					painelEmail.setVisible(true);
-					outrasInfos.setVisible(true);
-					infoProfs.setVisible(true);
-					
-					
-					//mostra o primeiro email encontrado
-					textEmail.setText(email);
-					
-					
-					// Preenche a tabela com outras informações coletadas
-					Vector<Vector<String>> tabela = sqlCon.outrasInfos(name);
-					int colunas = sqlCon.colunas;
-					for (int i=0; i<colunas; i++) {
-						df.addRow(tabela.elementAt(i));
-					}
-					
-					
-				}else {
-					//Altera novamente a tela do usuário, caso ele ja tenha pesquisado outro nome
-					btnEnviarEmail.setVisible(false);
-					painelEmail.setVisible(false);
-					outrasInfos.setVisible(false);
-					infoProfs.setVisible(false);
-					setBounds(500, 300, 400, 170);
-					
-					//Mensagem de erro
-					JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
+					pesquisar();
 				}
-
-			} else {
-				JOptionPane.showMessageDialog(btnSearchName, "Conexão com servidor falhou, tente novamente");
-			}
-				
+				else {
+					conexaoUp = false;
+					JOptionPane.showMessageDialog(btnSearchName, "Conexão com servidor falhou, tente novamente");
+				}
 		}
 			
 	});
@@ -371,70 +380,76 @@ public class Main2 extends JFrame {
 		// Ações ao pressionar Enter, que serão as mesmas do botão de pesquisa
 		
 		textName.addKeyListener(new KeyAdapter() {
+			
+			public void pesquisar() {
+				
+			//Limpa a tela
+			DefaultTableModel df = (DefaultTableModel) tabelaInfoProfs.getModel();
+			df.setRowCount(0);
+			textEmail.setText(null);
+				
+			// Pesquisa o email do prof	
+			String name = textName.getText();
+			email = sqlCon.pesquisaEmail(name);
+			
+			//se ele achar o email
+			if (email != null) {
+				
+				
+				//Altera a tela do usuário
+				setBounds(500, 300, 500, 370);
+				btnEnviarEmail.setVisible(true);
+				painelEmail.setVisible(true);
+				outrasInfos.setVisible(true);
+				infoProfs.setVisible(true);
+				
+				
+				//mostra o primeiro email encontrado
+				textEmail.setText(email);
+				
+				
+				// Preenche a tabela com outras informações coletadas
+				Vector<Vector<String>> tabela = sqlCon.outrasInfos(name);
+				int colunas = sqlCon.colunas;
+				for (int i=0; i<colunas; i++) {
+					df.addRow(tabela.elementAt(i));
+				}
+				
+				
+			}else {
+				//Altera novamente a tela do usuário, caso ele ja tenha pesquisado outro nome
+				btnEnviarEmail.setVisible(false);
+				painelEmail.setVisible(false);
+				outrasInfos.setVisible(false);
+				infoProfs.setVisible(false);
+				setBounds(500, 300, 400, 170);
+				
+				//Mensagem de erro
+				JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
+			}
+
+		}
+			
 			public void keyPressed(KeyEvent e) {
 				
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
 					
-					
-					//Limpa a tela
-					DefaultTableModel df = (DefaultTableModel) tabelaInfoProfs.getModel();
-					df.setRowCount(0);
-					textEmail.setText(null);
-					
 					//tenta se conectar, caso seja a primeira vez
-					if (conectado == null) {
-						conectado = sqlCon.criarConexao();
+					
+					if (conectar == null) {
+						conectar = sqlCon.criarConexao();
+						conexaoUp = true;
 					} 
 					
 					// se já estiver conectado
-					if(conectado != null) {
+					if(conexaoUp) {
 					
-						
-					// Pesquisa o email do prof	
-					String name = textName.getText();
-					email = sqlCon.pesquisaEmail(name);
-					
-					//se ele achar o email
-					if (email != null) {
-						
-						
-						//Altera a tela do usuário
-						setBounds(500, 300, 500, 370);
-						btnEnviarEmail.setVisible(true);
-						painelEmail.setVisible(true);
-						outrasInfos.setVisible(true);
-						infoProfs.setVisible(true);
-						
-						
-						//mostra o primeiro email encontrado
-						textEmail.setText(email);
-						
-						
-						// Preenche a tabela com outras informações coletadas
-						Vector<Vector<String>> tabela = sqlCon.outrasInfos(name);
-						int colunas = sqlCon.colunas;
-						for (int i=0; i<colunas; i++) {
-							df.addRow(tabela.elementAt(i));
-						}
-						
-						
-					}else {
-						//Altera novamente a tela do usuário, caso ele ja tenha pesquisado outro nome
-						btnEnviarEmail.setVisible(false);
-						painelEmail.setVisible(false);
-						outrasInfos.setVisible(false);
-						infoProfs.setVisible(false);
-						setBounds(500, 300, 400, 170);
-						
-						//Mensagem de erro
-						JOptionPane.showMessageDialog(btnSearchName, "Nome não encontrado, tente novamente");
+						pesquisar();
 					}
-
-				} else {
-					JOptionPane.showMessageDialog(btnSearchName, "Conexão com servidor falhou, tente novamente");
-				}
-					
-					
+					else {
+						conexaoUp = false;
+						JOptionPane.showMessageDialog(btnSearchName, "Conexão com servidor falhou, tente novamente");
+					}
 					
 				}
 				
