@@ -354,7 +354,7 @@ public class Main2 extends JFrame {
 							JOptionPane.showMessageDialog(btnSearchName, "Email copiado para a área de transferência !");
 						
 						Desktop.getDesktop().browse(new URI("https://serverjoabe.xyz:8090/snappymail/"));
-						//Desktop.getDesktop().browse(new URI("https://outlook.office.com"));
+							
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

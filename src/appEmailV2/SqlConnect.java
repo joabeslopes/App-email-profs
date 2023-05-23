@@ -21,7 +21,7 @@ public class SqlConnect {
 	public Connection criarConexao() {
 	
 	try {
-	con = DriverManager.getConnection("jdbc:mysql://databasejoabe.ddns.net:3306/javaAppEmail","javaAppEmail","smPvtJ@*!nq&5w%");
+	con = DriverManager.getConnection("jdbc:mysql://192.168.0.250:3306/javaappemail","javaappemail","javaappemail");
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -45,7 +45,6 @@ public class SqlConnect {
 			pst = con.prepareStatement(comando);
 			pst.setString(1, nome);
 			rs = pst.executeQuery();
-			rss = rs.getMetaData();
 			
 			if (rs.next()) {
 				this.email = rs.getString(1);
